@@ -39,7 +39,7 @@ const AVATAR_MAX = 6;
  * Возвращает рандомное целое положительное число из диапазона
  * @param {number} min - Начало диапазона
  * @param {number} max - Конец диапазона
- * @returns Случайное число
+ * @returns {number} Случайное число
  */
 const getRandomInteger = (min, max) => {
   const lower = Math.ceil(Math.min(min, max));
@@ -52,11 +52,10 @@ const getRandomInteger = (min, max) => {
  * Возвращает рандомный уникальный идетификтор из диапазона
  * @param {number} min - Начало диапазона
  * @param {number} max - Конец диапазона
- * @returns Уникальный идентификатор
+ * @returns {number} Уникальный идентификатор
  */
 function getRandomIdFromRangeGenerator (min, max) {
   const previousValues = [];
-
   return function () {
     let currentValue = getRandomInteger(min, max);
     if (previousValues.length >= (max - min + 1)) {
@@ -80,21 +79,34 @@ function getRandomIdFromRangeGenerator (min, max) {
 const getRandomArrayElement = (elements) => elements[getRandomInteger(0, elements.length - 1)];
 
 /**
+ * Генератор идентификаторв для фото
+ */
+const generatePhotoId = getRandomIdFromRangeGenerator(1, PHOTOS_COUNT);
+/**
+ * Генератор идентификаторов для комментариев
+ */
+const generateCommentId = getRandomIdFromRangeGenerator(1, PHOTOS_COUNT * MAX_COMMENTS_COUNT);
+
+/**
+ * Создает объект комментарий
+ * @returns {Object} Комментарий
+ */
+const createComment = () => {
+  const commentId = generateCommentId();
+  return {
+    id: commentId,
+    avatar: `img/avatar-${getRandomInteger(AVATAR_MIN, AVATAR_MAX)}.svg`,
+    message: getRandomArrayElement(MESSAGES),
+    name: getRandomArrayElement(AUTHORS),
+  };
+};
+
+/**
  * Создает объект фото
- * @returns Фото
+ * @returns {Object} Фото
  */
 const createPhoto = () => {
-  const generatePhotoId = getRandomIdFromRangeGenerator(1, PHOTOS_COUNT);
   const photoId = generatePhotoId();
-  const createComment = () => {
-    const generateCommentId = getRandomIdFromRangeGenerator(1, PHOTOS_COUNT * MAX_COMMENTS_COUNT);
-    return {
-      id: generateCommentId(),
-      avatar: `img/avatar-${getRandomInteger(AVATAR_MIN, AVATAR_MAX)}.svg`,
-      message: getRandomArrayElement(MESSAGES),
-      name: getRandomArrayElement(AUTHORS),
-    };
-  };
   return {
     id: photoId,
     url: `photos/${photoId}.jpg`,
