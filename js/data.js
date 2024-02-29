@@ -37,22 +37,36 @@ const MAX_LIKES = 200;
 const AVATAR_MIN = 1;
 const AVATAR_MAX = 6;
 
+
+/**
+ * Генератор идентификаторв для фото
+ */
+const generatePhotoId = getRandomIdFromRangeGenerator(1, PHOTOS_COUNT);
+/**
+ * Генератор идентификаторов для комментариев
+ */
+const generateCommentId = getRandomIdFromRangeGenerator(1, PHOTOS_COUNT * MAX_COMMENTS_COUNT);
+
+/**
+ * Создает объект комментарий
+ * @returns {Object} Комментарий
+ */
+const createComment = () => {
+  const commentId = generateCommentId();
+  return {
+    id: commentId,
+    avatar: `img/avatar-${getRandomInteger(AVATAR_MIN, AVATAR_MAX)}.svg`,
+    message: getRandomArrayElement(MESSAGES),
+    name: getRandomArrayElement(AUTHORS),
+  };
+};
+
 /**
  * Создает объект фото
- * @returns Фото
+ * @returns {Object} Фото
  */
 const createPhoto = () => {
-  const generatePhotoId = getRandomIdFromRangeGenerator(1, PHOTOS_COUNT);
   const photoId = generatePhotoId();
-  const createComment = () => {
-    const generateCommentId = getRandomIdFromRangeGenerator(1, PHOTOS_COUNT * MAX_COMMENTS_COUNT);
-    return {
-      id: generateCommentId(),
-      avatar: `img/avatar-${getRandomInteger(AVATAR_MIN, AVATAR_MAX)}.svg`,
-      message: getRandomArrayElement(MESSAGES),
-      name: getRandomArrayElement(AUTHORS),
-    };
-  };
   return {
     id: photoId,
     url: `photos/${photoId}.jpg`,
@@ -63,4 +77,5 @@ const createPhoto = () => {
 };
 
 const generatePhotos = () => Array.from({length: PHOTOS_COUNT}, createPhoto);
+
 export {generatePhotos};

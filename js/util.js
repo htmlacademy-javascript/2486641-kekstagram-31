@@ -2,7 +2,7 @@
  * Возвращает рандомное целое положительное число из диапазона
  * @param {number} min - Начало диапазона
  * @param {number} max - Конец диапазона
- * @returns Случайное число
+ * @returns {number} Случайное число
  */
 const getRandomInteger = (min, max) => {
   const lower = Math.ceil(Math.min(min, max));
@@ -15,11 +15,10 @@ const getRandomInteger = (min, max) => {
  * Возвращает рандомный уникальный идетификтор из диапазона
  * @param {number} min - Начало диапазона
  * @param {number} max - Конец диапазона
- * @returns Уникальный идентификатор
+ * @returns {number} Уникальный идентификатор
  */
 function getRandomIdFromRangeGenerator (min, max) {
   const previousValues = [];
-
   return function () {
     let currentValue = getRandomInteger(min, max);
     if (previousValues.length >= (max - min + 1)) {
@@ -41,5 +40,6 @@ function getRandomIdFromRangeGenerator (min, max) {
  * @returns Элемент массива
  */
 const getRandomArrayElement = (elements) => elements[getRandomInteger(0, elements.length - 1)];
+
 
 export {getRandomArrayElement, getRandomInteger, getRandomIdFromRangeGenerator};
