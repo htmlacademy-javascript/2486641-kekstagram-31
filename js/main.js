@@ -1,4 +1,5 @@
 import { generatePhotos } from './data';
+import { generatePictures } from './thumbnails';
 
-// eslint-disable-next-line no-console
-console.log(generatePhotos());
+const photos = generatePhotos();
+generatePictures(photos);
