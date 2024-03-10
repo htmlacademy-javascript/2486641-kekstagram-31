@@ -1,5 +1,6 @@
 import { generatePhotos } from './data';
 import { generatePictures } from './thumbnails';
+const pictureList = document.querySelector('.pictures');
 
 const photos = generatePhotos();
-generatePictures(photos);
+pictureList.append(generatePictures(photos));
