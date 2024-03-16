@@ -1,6 +1,10 @@
+import {generatePhotos} from './data.js';
+
 const template = document.querySelector('#picture').content;
 const templatePicture = template.querySelector('.picture');
 const pictureListFragment = document.createDocumentFragment();
+const pictureList = document.querySelector('.pictures');
+const photos = generatePhotos();
 
 /**
  * Вставляет данные из объекта в шаблон, добавляет шаблон в фрагмент
@@ -8,6 +12,7 @@ const pictureListFragment = document.createDocumentFragment();
  */
 const addPicture = (photo) => {
   const newPicture = templatePicture.cloneNode(true);
+  newPicture.dataset.id = photo.id;
   newPicture.querySelector('.picture__img').src = photo.url;
   newPicture.querySelector('.picture__img').alt = photo.description;
   newPicture.querySelector('.picture__likes').textContent = photo.likes;
@@ -19,11 +24,11 @@ const addPicture = (photo) => {
  * Для каждого эелемента массива вызывает функцию формирования Picture, добавляет фрагмент в блок миниатюр
  * @param {Array} photos - Массив объектов Фото
  */
-const generatePictures = (photos) => {
+const renderPictures = () => {
   photos.forEach((photo)=>{
     addPicture(photo);
   });
-  return pictureListFragment;
+  return pictureList.append(pictureListFragment);
 };
 
-export {generatePictures};
+export {renderPictures, photos};
