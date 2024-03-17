@@ -104,7 +104,7 @@ const onDocumentKeydown = (evt) => {
 const openPictureModal = (photo) => {
   renderBigPicture(photo);
   createCommentList(photo.comments);
-  closeModalButton.addEventListener('click', closePictureModal());
+  closeModalButton.addEventListener('click', closePictureModal);
   commentLoaderButton.addEventListener('click', onCommenstLoaderButton);
   document.addEventListener('keydown', onDocumentKeydown);
   checkShownCounter();
