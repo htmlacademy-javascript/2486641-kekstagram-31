@@ -1,7 +1,5 @@
 import {isEscapeKey} from './util.js';
 
-const AVATAR_WIDTH = 35;
-const AVATAR_HEIGHT = 35;
 const COUNT_NEW_COMMENTS = 5;
 
 const bigPicture = document.querySelector('.big-picture');
@@ -16,25 +14,19 @@ const closeModalButton = bigPicture.querySelector('.big-picture__cancel');
  */
 const createCommentList = (comments) => {
   const commentList = bigPicture.querySelector('.social__comments');
+  const commentListItem = commentList.querySelector('.social__comment').cloneNode(true);
+  commentListItem.classList.add('hidden');
   commentList.innerHTML = '';
   comments.forEach((comment) => {
-    const commentListItem = document.createElement('li');
-    commentListItem.classList.add('social__comment');
-    commentListItem.classList.add('hidden');
-
-    const avatar = document.createElement('img');
-    avatar.classList.add('social__picture');
+    const avatar = commentListItem.querySelector('.social__picture');
     avatar.src = comment.avatar;
     avatar.alt = comment.name;
-    avatar.width = AVATAR_WIDTH;
-    avatar.height = AVATAR_HEIGHT;
     commentListItem.append(avatar);
 
-    const commentText = document.createElement('p');
-    commentText.classList.add('social__text');
+    const commentText = commentListItem.querySelector('.social__text');
     commentText.textContent = comment.message;
     commentListItem.append(commentText);
-    commentList.append(commentListItem);
+    commentList.append(commentListItem.cloneNode(true));
   });
 };
 
@@ -84,7 +76,7 @@ const onCommenstLoaderButton = () => {
 /**
  * Закрывает модальное окно с фото
  */
-const closePictureModal = () => {
+const onClosePictureModal = () => {
   bigPicture.classList.add('hidden');
   document.body.classList.remove('modal-open');
   commentLoaderButton.removeEventListener('click', onCommenstLoaderButton);
@@ -93,7 +85,7 @@ const closePictureModal = () => {
 const onDocumentKeydown = (evt) => {
   if (isEscapeKey(evt)) {
     evt.preventDefault();
-    closePictureModal();
+    onClosePictureModal();
   }
 };
 
@@ -104,7 +96,7 @@ const onDocumentKeydown = (evt) => {
 const openPictureModal = (photo) => {
   renderBigPicture(photo);
   createCommentList(photo.comments);
-  closeModalButton.addEventListener('click', closePictureModal);
+  closeModalButton.addEventListener('click', onClosePictureModal);
   commentLoaderButton.addEventListener('click', onCommenstLoaderButton);
   document.addEventListener('keydown', onDocumentKeydown);
   checkShownCounter();
