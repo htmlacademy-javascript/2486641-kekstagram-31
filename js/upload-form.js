@@ -1,12 +1,28 @@
 import { isEscapeKey } from './util.js';
+import { ValidationErrors, validateDescription, validateHashtagsCount, validateHashtagsFormat, validateHashtagsUnique } from './validation.js';
 
-const HASHTAGS_MAX_COUNT = 5;
-const DESCRIPTION_MAX_LENGTH = 140;
-
+const Scale = {
+  DEFAULT: 100,
+  MIN: 25,
+  MAX: 100,
+  STEP: 25
+};
+const Effects = {
+  none: 'effects__preview--none',
+  chrome: 'effects__preview--chrome',
+  sepia: 'effects__preview--sepia',
+  marvin: 'effects__preview--marvin',
+  phobos: 'effects__preview--phobos',
+  heat: 'effects__preview--heat',
+};
 const form = document.querySelector('.img-upload__form');
 const hashtags = form.querySelector('.text__hashtags');
-const hashtag = /^#[a-zа-яё0-9]{1,19}$/i;
 const description = form.querySelector('.text__description');
+const buttonScaleSmaller = form.querySelector('.scale__control--smaller');
+const buttonScaleBigger = form.querySelector('.scale__control--bigger');
+const scaleValue = form.querySelector('.scale__control--value');
+const imagePreview = form.querySelector('.img-upload__preview img');
+const effectList = form.querySelector('.effects__list');
 
 //---------------------------------- Блок валидации ----------------------------------//
 const pristine = new Pristine(form, {
@@ -15,74 +31,32 @@ const pristine = new Pristine(form, {
   errorTextClass: 'img-upload__field-wrapper--error',
 });
 
-/**
- * Проверяет формат хэштегов
- * @param {String} value Строка с хэштегами
- */
-const validateHashtagsFormat = (value) => {
-  if (value) {
-    const hashtagsArray = value.split(' ');
-    let checkSum = 0;
-    hashtagsArray.forEach((element) => {
-      if (hashtag.test(element)) {
-        checkSum++;
-      }
-    });
-    return (checkSum === hashtagsArray.length);
-  } else {
-    return true;
+pristine.addValidator(hashtags, validateHashtagsFormat, ValidationErrors.HASHTAG_FORMAT);
+pristine.addValidator(hashtags, validateHashtagsUnique, ValidationErrors.HASHTAG_UNIQUE);
+pristine.addValidator(hashtags, validateHashtagsCount, ValidationErrors.HASHTAG_COUNT);
+pristine.addValidator(description, validateDescription, ValidationErrors.COMMENT_LENGTH);
+//-------------------------------------------------------------------------------------//
+
+const setPhotoScale = (scale) => {
+  imagePreview.style.transform = `scale(${scale / 100})`;
+};
+
+const onZoomIn = () => {
+  const scale = parseInt(scaleValue.value, 10) + Scale.STEP;
+  if (scale <= Scale.MAX){
+    scaleValue.value = `${scale}%`;
+    setPhotoScale(scale);
   }
 };
 
-/**
- * Проверяет уникальность хэштегов
- * @param {String} value Строка с хэштегами
- */
-const validateHashtagsUnique = (value) => {
-  const hashtagsArray = value.split(' ');
-  const hashtagsUnique = new Set(hashtagsArray);
-  return (hashtagsArray.length === hashtagsUnique.size);
+const onZoomOut = () => {
+  const scale = parseInt(scaleValue.value, 10) - Scale.STEP;
+  if (scale >= Scale.MIN){
+    scaleValue.value = `${scale}%`;
+    setPhotoScale(scale);
+  }
 };
 
-/**
- * Проверяет количество хэштегов
- * @param {String} value Строка с хэштегами
- */
-const validateHashtagsCount = (value) => {
-  const hashtagsArray = value.split(' ');
-  return (hashtagsArray.length <= HASHTAGS_MAX_COUNT);
-};
-
-/**
- * Проверяет длину описания
- * @param {String} value Описание фото
- */
-const validateDescription = (value) => value.length <= DESCRIPTION_MAX_LENGTH;
-
-pristine.addValidator(
-  hashtags,
-  validateHashtagsFormat,
-  'неверный формат хэштэга'
-);
-
-pristine.addValidator(
-  hashtags,
-  validateHashtagsUnique,
-  'один и тот же хэштег не может быть использован дважды'
-);
-
-pristine.addValidator(
-  hashtags,
-  validateHashtagsCount,
-  `нельзя указать больше ${HASHTAGS_MAX_COUNT} хэштегов`
-);
-
-pristine.addValidator(
-  description,
-  validateDescription,
-  `длина комментария не может составлять больше ${DESCRIPTION_MAX_LENGTH} символов`
-);
-//-------------------------------------------------------------------------------------//
 
 const onDocumentKeydown = (evt) => {
   if (isEscapeKey(evt)) {
@@ -93,10 +67,23 @@ const onDocumentKeydown = (evt) => {
   }
 };
 
+const setEffect = (effect) => {
+  imagePreview.className = '';
+  imagePreview.classList.add(Effects[effect]);
+};
+
+const onChangeEffect = (evt) => {
+  if (evt.target.matches('input')){
+    setEffect(evt.target.value);
+  }
+};
+
 function onCloseForm() {
   document.removeEventListener('keydown', onDocumentKeydown);
   form.querySelector('.img-upload__overlay').classList.add('hidden');
   document.body.classList.remove('modal-open');
+  setPhotoScale(Scale.DEFAULT);
+  setEffect('none');
 }
 
 const openForm = () => {
@@ -110,6 +97,9 @@ const openForm = () => {
       evt.preventDefault();
     }
   });
+  buttonScaleSmaller.addEventListener('click', onZoomOut);
+  buttonScaleBigger.addEventListener('click', onZoomIn);
+  effectList.addEventListener('click', (evt) => onChangeEffect(evt));
 };
 
 export {openForm};
