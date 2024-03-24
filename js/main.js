@@ -1,6 +1,8 @@
 import { renderPictures, photos } from './thumbnails.js';
 import { openPictureModal } from './big-picture.js';
+import { openForm } from './upload-form.js';
 const pictureList = document.querySelector('.pictures');
+const uploadInput = document.querySelector('.img-upload__input');
 
 // Отрисовка миниатюр
 renderPictures();
@@ -14,3 +16,9 @@ const onPictureClick = (evt) => {
 };
 
 pictureList.addEventListener('click', onPictureClick);
+
+const onUploadImage = () => {
+  openForm();
+};
+
+uploadInput.addEventListener('change', onUploadImage);

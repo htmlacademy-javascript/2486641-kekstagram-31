@@ -73,21 +73,22 @@ const onCommenstLoaderButton = () => {
   showComments(COUNT_NEW_COMMENTS);
 };
 
-/**
- * Закрывает модальное окно с фото
- */
-const onClosePictureModal = () => {
-  bigPicture.classList.add('hidden');
-  document.body.classList.remove('modal-open');
-  commentLoaderButton.removeEventListener('click', onCommenstLoaderButton);
-};
-
 const onDocumentKeydown = (evt) => {
   if (isEscapeKey(evt)) {
     evt.preventDefault();
     onClosePictureModal();
   }
 };
+
+/**
+ * Закрывает модальное окно с фото
+ */
+function onClosePictureModal() {
+  bigPicture.classList.add('hidden');
+  document.body.classList.remove('modal-open');
+  commentLoaderButton.removeEventListener('click', onCommenstLoaderButton);
+  document.removeEventListener('keydown', onDocumentKeydown);
+}
 
 /**
  * Открывает модальное окно с большим фото
