@@ -23,6 +23,8 @@ const buttonScaleBigger = form.querySelector('.scale__control--bigger');
 const scaleValue = form.querySelector('.scale__control--value');
 const imagePreview = form.querySelector('.img-upload__preview img');
 const effectList = form.querySelector('.effects__list');
+const sliderElement = form.querySelector('.effect-level__slider');
+const sliderValueElement = form.querySelector('.effect-level__value');
 
 //---------------------------------- Блок валидации ----------------------------------//
 const pristine = new Pristine(form, {
@@ -100,6 +102,19 @@ const openForm = () => {
   buttonScaleSmaller.addEventListener('click', onZoomOut);
   buttonScaleBigger.addEventListener('click', onZoomIn);
   effectList.addEventListener('click', (evt) => onChangeEffect(evt));
+  noUiSlider.create(sliderElement, {
+    range: {
+      min: 0,
+      max: 100,
+    },
+    start: 100,
+    step: 1,
+    connect: 'lower',
+  });
+  
+  sliderElement.noUiSlider.on('update', () => {
+    sliderValueElement.value = sliderElement.noUiSlider.get();
+  });
 };
 
 export {openForm};

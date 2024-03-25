@@ -15,8 +15,8 @@ const ValidationErrors = {
  * @param {String} value Строка с хэштегами
  */
 const validateHashtagsFormat = (value) => {
-  if (value) {
-    const hashtagsArray = value.split(' ');
+  if (value.trim()) {
+    const hashtagsArray = value.trim().split(' ');
     let checkSum = 0;
     hashtagsArray.forEach((element) => {
       if (hashtag.test(element)) {
@@ -34,7 +34,7 @@ const validateHashtagsFormat = (value) => {
  * @param {String} value Строка с хэштегами
  */
 const validateHashtagsUnique = (value) => {
-  const hashtagsArray = value.split(' ');
+  const hashtagsArray = value.trim().split(' ');
   const hashtagsUnique = new Set(hashtagsArray);
   return (hashtagsArray.length === hashtagsUnique.size);
 };
@@ -44,7 +44,7 @@ const validateHashtagsUnique = (value) => {
  * @param {String} value Строка с хэштегами
  */
 const validateHashtagsCount = (value) => {
-  const hashtagsArray = value.split(' ');
+  const hashtagsArray = value.trim().split(' ');
   return (hashtagsArray.length <= HASHTAGS_MAX_COUNT);
 };
 
@@ -52,6 +52,6 @@ const validateHashtagsCount = (value) => {
  * Проверяет длину описания
  * @param {String} value Описание фото
  */
-const validateDescription = (value) => value.length <= DESCRIPTION_MAX_LENGTH;
+const validateDescription = (value) => value.trim().length <= DESCRIPTION_MAX_LENGTH;
 
 export {ValidationErrors, validateDescription, validateHashtagsCount, validateHashtagsFormat, validateHashtagsUnique};
