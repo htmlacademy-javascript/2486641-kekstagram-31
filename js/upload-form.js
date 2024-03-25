@@ -1,3 +1,4 @@
+import { SliderConfigs } from './slider.js';
 import { isEscapeKey } from './util.js';
 import { ValidationErrors, validateDescription, validateHashtagsCount, validateHashtagsFormat, validateHashtagsUnique } from './validation.js';
 
@@ -8,13 +9,38 @@ const Scale = {
   STEP: 25
 };
 const Effects = {
-  none: 'effects__preview--none',
-  chrome: 'effects__preview--chrome',
-  sepia: 'effects__preview--sepia',
-  marvin: 'effects__preview--marvin',
-  phobos: 'effects__preview--phobos',
-  heat: 'effects__preview--heat',
+  none: {
+    class: 'effects__preview--none',
+    filter: '',
+    measure: '',
+  },
+  chrome: {
+    class: 'effects__preview--chrome',
+    filter: 'grayscale',
+    measure: '',
+  },
+  sepia: {
+    class: 'effects__preview--sepia',
+    filter: 'sepia',
+    measure: '',
+  },
+  marvin: {
+    class: 'effects__preview--marvin',
+    filter: 'invert',
+    measure: '%',
+  },
+  phobos: {
+    class: 'effects__preview--phobos',
+    filter: 'blur',
+    measure: 'px',
+  },
+  heat: {
+    class: 'effects__preview--heat',
+    filter: 'brightness',
+    measure: '',
+  },
 };
+
 const form = document.querySelector('.img-upload__form');
 const hashtags = form.querySelector('.text__hashtags');
 const description = form.querySelector('.text__description');
@@ -25,6 +51,7 @@ const imagePreview = form.querySelector('.img-upload__preview img');
 const effectList = form.querySelector('.effects__list');
 const sliderElement = form.querySelector('.effect-level__slider');
 const sliderValueElement = form.querySelector('.effect-level__value');
+const effectElements = form.querySelectorAll('.effects__radio');
 
 //---------------------------------- Блок валидации ----------------------------------//
 const pristine = new Pristine(form, {
@@ -69,9 +96,19 @@ const onDocumentKeydown = (evt) => {
   }
 };
 
+const onChangeSlider = () => {
+  effectElements.forEach((item) => {
+    if (item.checked) {
+      sliderValueElement.value = sliderElement.noUiSlider.get();
+      imagePreview.style.filter = `${Effects[item.value].filter}(${sliderElement.noUiSlider.get()}${Effects[item.value].measure})`;
+    }
+  });
+};
+
 const setEffect = (effect) => {
   imagePreview.className = '';
-  imagePreview.classList.add(Effects[effect]);
+  imagePreview.classList.add(Effects[effect].class);
+  sliderElement.noUiSlider.updateOptions(SliderConfigs[effect]);
 };
 
 const onChangeEffect = (evt) => {
@@ -86,6 +123,7 @@ function onCloseForm() {
   document.body.classList.remove('modal-open');
   setPhotoScale(Scale.DEFAULT);
   setEffect('none');
+  sliderElement.noUiSlider.destroy();
 }
 
 const openForm = () => {
@@ -102,19 +140,8 @@ const openForm = () => {
   buttonScaleSmaller.addEventListener('click', onZoomOut);
   buttonScaleBigger.addEventListener('click', onZoomIn);
   effectList.addEventListener('click', (evt) => onChangeEffect(evt));
-  noUiSlider.create(sliderElement, {
-    range: {
-      min: 0,
-      max: 100,
-    },
-    start: 100,
-    step: 1,
-    connect: 'lower',
-  });
-  
-  sliderElement.noUiSlider.on('update', () => {
-    sliderValueElement.value = sliderElement.noUiSlider.get();
-  });
+  noUiSlider.create(sliderElement, SliderConfigs['none']);
+  sliderElement.noUiSlider.on('update', onChangeSlider);
 };
 
 export {openForm};
