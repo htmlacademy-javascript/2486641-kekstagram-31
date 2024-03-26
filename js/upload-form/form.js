@@ -4,7 +4,7 @@ import { isEscapeKey } from '../util.js';
 import { onValidate } from './validation.js';
 import { onZoomIn, onZoomOut, setPhotoScale } from './scale.js';
 
-const uploadFormElement = document.querySelector('.img-upload__uploadFormElement');
+const uploadFormElement = document.querySelector('.img-upload__form');
 const scaleSmallerElement = uploadFormElement.querySelector('.scale__control--smaller');
 const scaleBiggerElement = uploadFormElement.querySelector('.scale__control--bigger');
 const effectListElement = uploadFormElement.querySelector('.effects__list');
@@ -14,12 +14,12 @@ const onDocumentKeydown = (evt) => {
   if (isEscapeKey(evt)) {
     evt.preventDefault();
     if (!evt.target.matches('.text__hashtags') && !evt.target.matches('.text__description')) {
-      onCloseuploadFormElement();
+      onCloseForm();
     }
   }
 };
 
-function onCloseuploadFormElement() {
+function onCloseForm() {
   document.removeEventListener('keydown', onDocumentKeydown);
   uploadFormElement.querySelector('.img-upload__overlay').classList.add('hidden');
   document.body.classList.remove('modal-open');
@@ -28,11 +28,11 @@ function onCloseuploadFormElement() {
   sliderElement.noUiSlider.destroy();
 }
 
-const openuploadFormElement = () => {
+const openForm = () => {
   uploadFormElement.querySelector('.img-upload__overlay').classList.remove('hidden');
   document.body.classList.add('modal-open');
   document.addEventListener('keydown', onDocumentKeydown);
-  uploadFormElement.querySelector('.img-upload__cancel').addEventListener('click', onCloseuploadFormElement);
+  uploadFormElement.querySelector('.img-upload__cancel').addEventListener('click', onCloseForm);
   uploadFormElement.addEventListener('submit', onValidate);
   scaleSmallerElement.addEventListener('click', onZoomOut);
   scaleBiggerElement.addEventListener('click', onZoomIn);
@@ -40,4 +40,4 @@ const openuploadFormElement = () => {
   createSlider();
 };
 
-export {openuploadFormElement};
+export {openForm};

@@ -50,7 +50,7 @@ const onChangeEffect = (evt) => {
 const setEffectStyle = (effect, sliderValue) => {
   if (effect === 'none') {
     imagePreviewElement.removeAttribute('class');
-    imagePreviewElement.removeAttribute('style');
+    imagePreviewElement.style.filter = '';
   } else {
     imagePreviewElement.style.filter = `${Effects[effect].filter}(${sliderValue}${Effects[effect].measure})`;
   }

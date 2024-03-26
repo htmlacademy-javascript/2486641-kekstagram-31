@@ -12,6 +12,13 @@ const ValidationErrors = {
 const uploadFormElement = document.querySelector('.img-upload__form');
 const textHashtagsElement = uploadFormElement.querySelector('.text__hashtags');
 const textDescriptionElement = uploadFormElement.querySelector('.text__description');
+
+const pristine = new Pristine(uploadFormElement, {
+  classTo: 'img-upload__field-wrapper',
+  errorTextParent: 'img-upload__field-wrapper',
+  errorTextClass: 'img-upload__field-wrapper--error',
+});
+
 /**
  * Проверяет формат хэштегов
  * @param {String} value Строка с хэштегами
@@ -56,14 +63,10 @@ const validateHashtagsCount = (value) => {
  */
 const validateDescription = (value) => value.trim().length <= DESCRIPTION_MAX_LENGTH;
 
-const pristine = new Pristine(uploadFormElement, {
-  classTo: 'img-upload__field-wrapper',
-  errorTextParent: 'img-upload__field-wrapper',
-  errorTextClass: 'img-upload__field-wrapper--error',
-});
-
 const onValidate = (evt) => {
   const isValid = pristine.validate();
+  textDescriptionElement.value = textDescriptionElement.value.trim();
+  textHashtagsElement.value = textHashtagsElement.value.trim();
   if (!isValid) {
     evt.preventDefault();
   }
@@ -74,4 +77,4 @@ pristine.addValidator(textHashtagsElement, validateHashtagsUnique, ValidationErr
 pristine.addValidator(textHashtagsElement, validateHashtagsCount, ValidationErrors.HASHTAG_COUNT);
 pristine.addValidator(textDescriptionElement, validateDescription, ValidationErrors.COMMENT_LENGTH);
 
-export {ValidationErrors, validateDescription, validateHashtagsCount, validateHashtagsFormat, validateHashtagsUnique, onValidate};
+export { validateDescription, validateHashtagsCount, validateHashtagsFormat, validateHashtagsUnique, onValidate};
