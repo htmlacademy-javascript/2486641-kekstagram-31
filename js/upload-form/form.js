@@ -3,12 +3,19 @@ import { createSlider } from './slider.js';
 import { isEscapeKey } from '../util.js';
 import { onValidate } from './validation.js';
 import { onZoomIn, onZoomOut, setPhotoScale } from './scale.js';
+import { sendData } from '../api.js';
+
+const SubmitButtonText = {
+  IDLE: 'Сохранить',
+  SENDING: 'Сохраняю...'
+};
 
 const uploadFormElement = document.querySelector('.img-upload__form');
 const scaleSmallerElement = uploadFormElement.querySelector('.scale__control--smaller');
 const scaleBiggerElement = uploadFormElement.querySelector('.scale__control--bigger');
 const effectListElement = uploadFormElement.querySelector('.effects__list');
 const sliderElement = uploadFormElement.querySelector('.effect-level__slider');
+const submitButtonElement = uploadFormElement.querySelector('.img-upload__submit');
 
 const onDocumentKeydown = (evt) => {
   if (isEscapeKey(evt)) {
@@ -17,6 +24,36 @@ const onDocumentKeydown = (evt) => {
       onCloseForm();
     }
   }
+};
+
+const blockSubmitButton = () => {
+  submitButtonElement.disabled = true;
+  submitButtonElement.textContent = SubmitButtonText.SENDING;
+};
+
+const unblockSubmitButton = () => {
+  submitButtonElement.disabled = false;
+  submitButtonElement.textContent = SubmitButtonText.IDLE;
+};
+
+const setUploadFormSubmit = (onSuccess) => {
+  uploadFormElement.addEventListener('submit', (evt) => {
+    evt.preventDefault();
+
+    const isValid = onValidate();
+    if (isValid) {
+      blockSubmitButton();
+      sendData(new FormData(evt.target))
+        .then(onSuccess)
+        .catch(
+          (err) => {
+            console.log(err);
+            //showAlert(err.message);
+          }
+        )
+        .finally(unblockSubmitButton);
+    }
+  });
 };
 
 function onCloseForm() {
@@ -33,11 +70,13 @@ const openForm = () => {
   document.body.classList.add('modal-open');
   document.addEventListener('keydown', onDocumentKeydown);
   uploadFormElement.querySelector('.img-upload__cancel').addEventListener('click', onCloseForm);
-  uploadFormElement.addEventListener('submit', onValidate);
+  //uploadFormElement.addEventListener('submit', onSubmit);
   scaleSmallerElement.addEventListener('click', onZoomOut);
   scaleBiggerElement.addEventListener('click', onZoomIn);
   effectListElement.addEventListener('click', (evt) => onChangeEffect(evt));
   createSlider();
+  setUploadFormSubmit(onCloseForm);
 };
+
 
 export {openForm};
