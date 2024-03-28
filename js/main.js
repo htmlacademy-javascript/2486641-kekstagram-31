@@ -33,8 +33,8 @@ getData()
   );
 
 const onPictureClick = (evt) => {
-  if (evt.target.matches('.picture__img')){
-    const selectedPicture = evt.target.offsetParent;
+  const selectedPicture = evt.target.closest('a');
+  if (selectedPicture){
     const currentElement = photos.find((photo) => (photo.id === +selectedPicture.dataset.id));
     openPictureModal(currentElement);
   }

@@ -70,10 +70,9 @@ const openForm = () => {
   document.body.classList.add('modal-open');
   document.addEventListener('keydown', onDocumentKeydown);
   uploadFormElement.querySelector('.img-upload__cancel').addEventListener('click', onCloseForm);
-  //uploadFormElement.addEventListener('submit', onSubmit);
   scaleSmallerElement.addEventListener('click', onZoomOut);
   scaleBiggerElement.addEventListener('click', onZoomIn);
-  effectListElement.addEventListener('click', (evt) => onChangeEffect(evt));
+  effectListElement.addEventListener('click', onChangeEffect);
   createSlider();
   setUploadFormSubmit(onCloseForm);
 };
