@@ -1,4 +1,4 @@
-import { onChangeEffect, setEffect } from './effects.js';
+import { onChangeEffect, setEffectStyle } from './effects.js';
 import { createSlider } from './slider.js';
 import { isEscapeKey } from '../util.js';
 import { onValidate } from './validation.js';
@@ -16,6 +16,9 @@ const scaleBiggerElement = uploadFormElement.querySelector('.scale__control--big
 const effectListElement = uploadFormElement.querySelector('.effects__list');
 const sliderElement = uploadFormElement.querySelector('.effect-level__slider');
 const submitButtonElement = uploadFormElement.querySelector('.img-upload__submit');
+const inputFileElement = uploadFormElement.querySelector('.img-upload__input');
+const textHashtagsElement = uploadFormElement.querySelector('.text__hashtags');
+const textDescriptionElement = uploadFormElement.querySelector('.text__description');
 
 const onDocumentKeydown = (evt) => {
   if (isEscapeKey(evt)) {
@@ -36,33 +39,56 @@ const unblockSubmitButton = () => {
   submitButtonElement.textContent = SubmitButtonText.IDLE;
 };
 
-const setUploadFormSubmit = (onSuccess) => {
-  uploadFormElement.addEventListener('submit', (evt) => {
-    evt.preventDefault();
-
-    const isValid = onValidate();
-    if (isValid) {
-      blockSubmitButton();
-      sendData(new FormData(evt.target))
-        .then(onSuccess)
-        .catch(
-          (err) => {
-            console.log(err);
-            //showAlert(err.message);
-          }
-        )
-        .finally(unblockSubmitButton);
-    }
-  });
+const showAlert = (alertType) => {
+  const alertContainer = document.querySelector(`#${alertType}`).content.querySelector(`.${alertType}`).cloneNode(true);
+  document.body.append(alertContainer);
+  alertContainer.querySelector(`.${alertType}__button`).addEventListener('click', () => document.body.removeChild(alertContainer));
 };
+
+const onUploadFormSubmit = (evt) => {
+  evt.preventDefault();
+
+  const isValid = onValidate();
+  if (isValid) {
+    blockSubmitButton();
+    sendData(new FormData(evt.target))
+      .then(onCloseForm)
+      .then(() => showAlert('success'))
+      .catch(() => showAlert('error'))
+      .finally(unblockSubmitButton);
+  }
+};
+ 
+
+//   const isValid = onValidate();
+//   if (isValid) {
+//     blockSubmitButton();
+//     sendData(new FormData(evt.target))
+//       .then(() => {
+//         onCloseForm();
+//         showAlert('success');
+//       })
+//       .catch(
+//         () => {
+//           showAlert('error');
+//         }
+//       )
+//       .finally(unblockSubmitButton);
+//   }
+// };
 
 function onCloseForm() {
   document.removeEventListener('keydown', onDocumentKeydown);
   uploadFormElement.querySelector('.img-upload__overlay').classList.add('hidden');
   document.body.classList.remove('modal-open');
   setPhotoScale();
-  setEffect('none');
   sliderElement.noUiSlider.destroy();
+  inputFileElement.value = '';
+  textDescriptionElement.value = '';
+  textHashtagsElement.value = '';
+  uploadFormElement.removeEventListener('submit', onUploadFormSubmit);
+  document.getElementById('effect-none').checked = true;
+  setEffectStyle('none', 100);
 }
 
 const openForm = () => {
@@ -74,7 +100,7 @@ const openForm = () => {
   scaleBiggerElement.addEventListener('click', onZoomIn);
   effectListElement.addEventListener('click', onChangeEffect);
   createSlider();
-  setUploadFormSubmit(onCloseForm);
+  uploadFormElement.addEventListener('submit', onUploadFormSubmit);
 };
 
 
