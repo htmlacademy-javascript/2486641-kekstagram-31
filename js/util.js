@@ -1,3 +1,5 @@
+const ALERT_SHOW_TIME = 5000;
+
 /**
  * Возвращает рандомное целое положительное число из диапазона
  * @param {number} min - Начало диапазона
@@ -43,4 +45,13 @@ const getRandomArrayElement = (elements) => elements[getRandomInteger(0, element
 
 const isEscapeKey = (evt) => evt.key === 'Escape';
 
-export {getRandomArrayElement, getRandomInteger, getRandomIdFromRangeGenerator, isEscapeKey};
+const showAlert = () => {
+  const alertContainer = document.querySelector('#data-error').content.querySelector('.data-error').cloneNode(true);
+  document.body.appendChild(alertContainer);
+
+  setTimeout(() => {
+    alertContainer.remove();
+  }, ALERT_SHOW_TIME);
+};
+
+export {getRandomArrayElement, getRandomInteger, getRandomIdFromRangeGenerator, isEscapeKey, showAlert};

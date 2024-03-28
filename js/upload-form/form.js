@@ -15,9 +15,6 @@ const scaleBiggerElement = uploadFormElement.querySelector('.scale__control--big
 const effectListElement = uploadFormElement.querySelector('.effects__list');
 const sliderElement = uploadFormElement.querySelector('.effect-level__slider');
 const submitButtonElement = uploadFormElement.querySelector('.img-upload__submit');
-const inputFileElement = uploadFormElement.querySelector('.img-upload__input');
-const textHashtagsElement = uploadFormElement.querySelector('.text__hashtags');
-const textDescriptionElement = uploadFormElement.querySelector('.text__description');
 const uploadOverlayElement = uploadFormElement.querySelector('.img-upload__overlay');
 const cancelButtonElement = uploadFormElement.querySelector('.img-upload__cancel');
 
@@ -43,7 +40,7 @@ const unblockSubmitButton = () => {
 const showMessage = (messageType) => {
   const messageContainer = document.querySelector(`#${messageType}`).content.querySelector(`.${messageType}`).cloneNode(true);
   document.body.append(messageContainer);
-  messageContainer.querySelector(`.${messageType}__button`).addEventListener('click', () => document.body.removeChild(messageContainer));
+  messageContainer.querySelector(`.${messageType}__button`).addEventListener('click', () => messageContainer.remove());
 };
 
 const onUploadFormSubmit = (evt) => {
@@ -73,10 +70,7 @@ const openForm = () => {
 };
 
 const resetForm = () => {
-  inputFileElement.value = '';
-  textDescriptionElement.value = '';
-  textHashtagsElement.value = '';
-  document.getElementById('effect-none').checked = true;
+  uploadFormElement.reset();
   setEffectStyle();
   setPhotoScale();
 };
