@@ -1,7 +1,6 @@
-import { onChangeEffect, setEffectStyle } from './effects.js';
-import { createSlider } from './slider.js';
+import { createSlider, onChangeEffect, setEffectStyle } from './effects.js';
 import { isEscapeKey } from '../util.js';
-import { onValidate } from './validation.js';
+import { onValidate, pristine } from './validation.js';
 import { onZoomIn, onZoomOut, setPhotoScale } from './scale.js';
 import { sendData } from '../api.js';
 
@@ -19,6 +18,8 @@ const submitButtonElement = uploadFormElement.querySelector('.img-upload__submit
 const inputFileElement = uploadFormElement.querySelector('.img-upload__input');
 const textHashtagsElement = uploadFormElement.querySelector('.text__hashtags');
 const textDescriptionElement = uploadFormElement.querySelector('.text__description');
+const uploadOverlayElement = uploadFormElement.querySelector('.img-upload__overlay');
+const cancelButtonElement = uploadFormElement.querySelector('.img-upload__cancel');
 
 const onDocumentKeydown = (evt) => {
   if (isEscapeKey(evt)) {
@@ -39,10 +40,10 @@ const unblockSubmitButton = () => {
   submitButtonElement.textContent = SubmitButtonText.IDLE;
 };
 
-const showAlert = (alertType) => {
-  const alertContainer = document.querySelector(`#${alertType}`).content.querySelector(`.${alertType}`).cloneNode(true);
-  document.body.append(alertContainer);
-  alertContainer.querySelector(`.${alertType}__button`).addEventListener('click', () => document.body.removeChild(alertContainer));
+const showMessage = (messageType) => {
+  const messageContainer = document.querySelector(`#${messageType}`).content.querySelector(`.${messageType}`).cloneNode(true);
+  document.body.append(messageContainer);
+  messageContainer.querySelector(`.${messageType}__button`).addEventListener('click', () => document.body.removeChild(messageContainer));
 };
 
 const onUploadFormSubmit = (evt) => {
@@ -53,55 +54,41 @@ const onUploadFormSubmit = (evt) => {
     blockSubmitButton();
     sendData(new FormData(evt.target))
       .then(onCloseForm)
-      .then(() => showAlert('success'))
-      .catch(() => showAlert('error'))
+      .then(() => showMessage('success'))
+      .catch(() => showMessage('error'))
       .finally(unblockSubmitButton);
   }
 };
- 
-
-//   const isValid = onValidate();
-//   if (isValid) {
-//     blockSubmitButton();
-//     sendData(new FormData(evt.target))
-//       .then(() => {
-//         onCloseForm();
-//         showAlert('success');
-//       })
-//       .catch(
-//         () => {
-//           showAlert('error');
-//         }
-//       )
-//       .finally(unblockSubmitButton);
-//   }
-// };
-
-function onCloseForm() {
-  document.removeEventListener('keydown', onDocumentKeydown);
-  uploadFormElement.querySelector('.img-upload__overlay').classList.add('hidden');
-  document.body.classList.remove('modal-open');
-  setPhotoScale();
-  sliderElement.noUiSlider.destroy();
-  inputFileElement.value = '';
-  textDescriptionElement.value = '';
-  textHashtagsElement.value = '';
-  uploadFormElement.removeEventListener('submit', onUploadFormSubmit);
-  document.getElementById('effect-none').checked = true;
-  setEffectStyle('none', 100);
-}
 
 const openForm = () => {
-  uploadFormElement.querySelector('.img-upload__overlay').classList.remove('hidden');
+  uploadOverlayElement.classList.remove('hidden');
   document.body.classList.add('modal-open');
   document.addEventListener('keydown', onDocumentKeydown);
-  uploadFormElement.querySelector('.img-upload__cancel').addEventListener('click', onCloseForm);
+  cancelButtonElement.addEventListener('click', onCloseForm);
   scaleSmallerElement.addEventListener('click', onZoomOut);
   scaleBiggerElement.addEventListener('click', onZoomIn);
   effectListElement.addEventListener('click', onChangeEffect);
-  createSlider();
   uploadFormElement.addEventListener('submit', onUploadFormSubmit);
+  createSlider();
 };
 
+const resetForm = () => {
+  inputFileElement.value = '';
+  textDescriptionElement.value = '';
+  textHashtagsElement.value = '';
+  document.getElementById('effect-none').checked = true;
+  setEffectStyle();
+  setPhotoScale();
+};
+
+function onCloseForm() {
+  uploadOverlayElement.classList.add('hidden');
+  document.body.classList.remove('modal-open');
+  document.removeEventListener('keydown', onDocumentKeydown);
+  uploadFormElement.removeEventListener('submit', onUploadFormSubmit);
+  resetForm();
+  sliderElement.noUiSlider.destroy();
+  pristine.reset();
+}
 
 export {openForm};

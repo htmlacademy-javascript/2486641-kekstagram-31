@@ -73,4 +73,4 @@ pristine.addValidator(textHashtagsElement, validateHashtagsUnique, ValidationErr
 pristine.addValidator(textHashtagsElement, validateHashtagsCount, ValidationErrors.HASHTAG_COUNT);
 pristine.addValidator(textDescriptionElement, validateDescription, ValidationErrors.COMMENT_LENGTH);
 
-export { validateDescription, validateHashtagsCount, validateHashtagsFormat, validateHashtagsUnique, onValidate};
+export { validateDescription, validateHashtagsCount, validateHashtagsFormat, validateHashtagsUnique, onValidate, pristine};
