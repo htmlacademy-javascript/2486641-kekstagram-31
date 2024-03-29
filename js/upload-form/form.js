@@ -19,6 +19,7 @@ const uploadOverlayElement = uploadFormElement.querySelector('.img-upload__overl
 const cancelButtonElement = uploadFormElement.querySelector('.img-upload__cancel');
 
 const onDocumentKeydown = (evt) => {
+  evt.stopPropagation();
   if (isEscapeKey(evt)) {
     evt.preventDefault();
     if (!evt.target.matches('.text__hashtags') && !evt.target.matches('.text__description')) {
@@ -41,6 +42,18 @@ const showMessage = (messageType) => {
   const messageContainer = document.querySelector(`#${messageType}`).content.querySelector(`.${messageType}`).cloneNode(true);
   document.body.append(messageContainer);
   messageContainer.querySelector(`.${messageType}__button`).addEventListener('click', () => messageContainer.remove());
+  messageContainer.addEventListener('click', (evt) => {
+    if (evt.target.matches(`.${messageType}`)){
+      evt.stopPropagation();
+      messageContainer.remove();
+    }
+  });
+  document.body.addEventListener('keydown', (evt) => {
+    if (isEscapeKey(evt)) {
+      evt.stopPropagation();
+      messageContainer.remove();
+    }
+  });
 };
 
 const onUploadFormSubmit = (evt) => {
@@ -78,7 +91,7 @@ const resetForm = () => {
 function onCloseForm() {
   uploadOverlayElement.classList.add('hidden');
   document.body.classList.remove('modal-open');
-  document.removeEventListener('keydown', onDocumentKeydown);
+  //document.removeEventListener('keydown', onDocumentKeydown);
   uploadFormElement.removeEventListener('submit', onUploadFormSubmit);
   resetForm();
   sliderElement.noUiSlider.destroy();
