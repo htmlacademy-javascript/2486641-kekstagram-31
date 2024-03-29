@@ -33,9 +33,8 @@ const validateHashtagsFormat = (value) => {
       }
     });
     return (checkSum === hashtagsArray.length);
-  } else {
-    return true;
   }
+  return true;
 };
 
 /**
@@ -63,13 +62,15 @@ const validateHashtagsCount = (value) => {
  */
 const validateDescription = (value) => value.trim().length <= DESCRIPTION_MAX_LENGTH;
 
-const onValidate = (evt) => {
-  const isValid = pristine.validate();
+/**
+ * Убирает лишние пробелы по краям перед отправкой формы
+ * Проверяет валидность
+ * @returns Результат валидации
+ */
+const onValidate = () => {
   textDescriptionElement.value = textDescriptionElement.value.trim();
   textHashtagsElement.value = textHashtagsElement.value.trim();
-  if (!isValid) {
-    evt.preventDefault();
-  }
+  return pristine.validate();
 };
 
 pristine.addValidator(textHashtagsElement, validateHashtagsFormat, ValidationErrors.HASHTAG_FORMAT);
@@ -77,4 +78,4 @@ pristine.addValidator(textHashtagsElement, validateHashtagsUnique, ValidationErr
 pristine.addValidator(textHashtagsElement, validateHashtagsCount, ValidationErrors.HASHTAG_COUNT);
 pristine.addValidator(textDescriptionElement, validateDescription, ValidationErrors.COMMENT_LENGTH);
 
-export { validateDescription, validateHashtagsCount, validateHashtagsFormat, validateHashtagsUnique, onValidate};
+export { validateDescription, validateHashtagsCount, validateHashtagsFormat, validateHashtagsUnique, onValidate, pristine};

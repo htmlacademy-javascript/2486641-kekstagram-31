@@ -1,59 +1,125 @@
-import { setSliderOptions } from './slider.js';
+const SliderConfigs = {
+  none: {
+    range: {min: 0, max: 100,},
+    start: 100,
+    step: 1,
+    connect: 'lower',
+  },
+  chrome:
+  {
+    range: {min: 0, max: 1,},
+    start: 1,
+    step: 0.1,
+    connect: 'lower',
+  },
+  sepia: {
+    range: {min: 0, max: 1,},
+    start: 1,
+    step: 0.1,
+    connect: 'lower',
+  },
+  marvin: {range: {min: 0, max: 100,},
+    start: 100,
+    step: 1,
+    connect: 'lower',
+  },
+  phobos: {
+    range: {min: 0, max: 3,},
+    start: 3,
+    step: 0.1,
+    connect: 'lower',
+  },
+  heat: {
+    range: {min: 1, max: 3,},
+    start: 3,
+    step: 0.1,
+    connect: 'lower',
+  },
+};
 
 const Effects = {
-  none: {
-    class: 'effects__preview--none',
-    filter: '',
-    measure: '',
-  },
   chrome: {
-    class: 'effects__preview--chrome',
     filter: 'grayscale',
     measure: '',
   },
   sepia: {
-    class: 'effects__preview--sepia',
     filter: 'sepia',
     measure: '',
   },
   marvin: {
-    class: 'effects__preview--marvin',
     filter: 'invert',
     measure: '%',
   },
   phobos: {
-    class: 'effects__preview--phobos',
     filter: 'blur',
     measure: 'px',
   },
   heat: {
-    class: 'effects__preview--heat',
     filter: 'brightness',
     measure: '',
   },
 };
 
 const imagePreviewElement = document.querySelector('.img-upload__preview img');
+const sliderValueElement = document.querySelector('.effect-level__value');
+const effectElements = document.querySelectorAll('.effects__radio');
+const sliderContainerElement = document.querySelector('.img-upload__effect-level');
+const sliderElement = document.querySelector('.effect-level__slider');
 
-const setEffect = (effect) => {
-  imagePreviewElement.removeAttribute('class');
-  imagePreviewElement.classList.add(Effects[effect].class);
-  setSliderOptions(effect);
+/**
+ * Устанавливает стиль изображения
+ * @param {String} effect Название эффекта
+ * @param {Number} sliderValue Интенсивности эффекта
+ */
+const setEffectStyle = (effect = 'none', sliderValue) => {
+  imagePreviewElement.style.filter =
+  effect === 'none'
+    ? ''
+    : `${Effects[effect].filter}(${sliderValue}${Effects[effect].measure})`;
 };
 
+/**
+ * Меняет значение интенсивности при изменении слайдера
+ */
+const onChangeSlider = () => {
+  effectElements.forEach((item) => {
+    if (item.checked) {
+      setEffectStyle(item.value, sliderElement.noUiSlider.get());
+      if (item.value === 'none') {
+        sliderContainerElement.classList.add('hidden');
+      } else {
+        sliderContainerElement.classList.remove('hidden');
+        sliderValueElement.value = sliderElement.noUiSlider.get();
+      }
+    }
+  });
+};
+
+/**
+ * Создает слайдер с начальной конфигурацией
+ */
+const createSlider = () => {
+  noUiSlider.create(sliderElement, SliderConfigs['none']);
+  sliderElement.noUiSlider.on('update', onChangeSlider);
+};
+
+/**
+ * Устанавливает настройки слайдера в соответствии с выбранным эффектом
+ * @param {String} effect Название эффекта
+ */
+const setSliderOptions = (effect) => {
+  sliderElement.noUiSlider.updateOptions(SliderConfigs[effect]);
+};
+
+/**
+ * Срабатывает при изменении эффекта
+ * @param {Object} evt Объект события
+ */
 const onChangeEffect = (evt) => {
   if (evt.target.matches('input')){
-    setEffect(evt.target.value);
+    setSliderOptions(evt.target.value);
   }
 };
 
-const setEffectStyle = (effect, sliderValue) => {
-  if (effect === 'none') {
-    imagePreviewElement.removeAttribute('class');
-    imagePreviewElement.style.filter = '';
-  } else {
-    imagePreviewElement.style.filter = `${Effects[effect].filter}(${sliderValue}${Effects[effect].measure})`;
-  }
-};
 
-export {onChangeEffect, setEffect, setEffectStyle};
+export {onChangeEffect, setEffectStyle, createSlider};
