@@ -66,6 +66,11 @@ const effectElements = document.querySelectorAll('.effects__radio');
 const sliderContainerElement = document.querySelector('.img-upload__effect-level');
 const sliderElement = document.querySelector('.effect-level__slider');
 
+/**
+ * Устанавливает стиль изображения
+ * @param {String} effect Название эффекта
+ * @param {Number} sliderValue Интенсивности эффекта
+ */
 const setEffectStyle = (effect = 'none', sliderValue) => {
   imagePreviewElement.style.filter =
   effect === 'none'
@@ -73,6 +78,9 @@ const setEffectStyle = (effect = 'none', sliderValue) => {
     : `${Effects[effect].filter}(${sliderValue}${Effects[effect].measure})`;
 };
 
+/**
+ * Меняет значение интенсивности при изменении слайдера
+ */
 const onChangeSlider = () => {
   effectElements.forEach((item) => {
     if (item.checked) {
@@ -87,15 +95,26 @@ const onChangeSlider = () => {
   });
 };
 
+/**
+ * Создает слайдер с начальной конфигурацией
+ */
 const createSlider = () => {
   noUiSlider.create(sliderElement, SliderConfigs['none']);
   sliderElement.noUiSlider.on('update', onChangeSlider);
 };
 
+/**
+ * Устанавливает настройки слайдера в соответствии с выбранным эффектом
+ * @param {String} effect Название эффекта
+ */
 const setSliderOptions = (effect) => {
   sliderElement.noUiSlider.updateOptions(SliderConfigs[effect]);
 };
 
+/**
+ * Срабатывает при изменении эффекта
+ * @param {Object} evt Объект события
+ */
 const onChangeEffect = (evt) => {
   if (evt.target.matches('input')){
     setSliderOptions(evt.target.value);

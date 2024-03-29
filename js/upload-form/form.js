@@ -17,9 +17,14 @@ const sliderElement = uploadFormElement.querySelector('.effect-level__slider');
 const submitButtonElement = uploadFormElement.querySelector('.img-upload__submit');
 const uploadOverlayElement = uploadFormElement.querySelector('.img-upload__overlay');
 const cancelButtonElement = uploadFormElement.querySelector('.img-upload__cancel');
+const messageSuccessElement = document.querySelector('#success').content.querySelector('.success').cloneNode(true);
+const messageErrorElement = document.querySelector('#error').content.querySelector('.error').cloneNode(true);
 
+/**
+ * Закрывает форму при нажатии на Esc
+ * @param {Object} evt Объект события
+ */
 const onDocumentKeydown = (evt) => {
-  evt.stopPropagation();
   if (isEscapeKey(evt)) {
     evt.preventDefault();
     if (!evt.target.matches('.text__hashtags') && !evt.target.matches('.text__description')) {
@@ -38,38 +43,68 @@ const unblockSubmitButton = () => {
   submitButtonElement.textContent = SubmitButtonText.IDLE;
 };
 
-const showMessage = (messageType) => {
-  const messageContainer = document.querySelector(`#${messageType}`).content.querySelector(`.${messageType}`).cloneNode(true);
-  document.body.append(messageContainer);
-  messageContainer.querySelector(`.${messageType}__button`).addEventListener('click', () => messageContainer.remove());
-  messageContainer.addEventListener('click', (evt) => {
-    if (evt.target.matches(`.${messageType}`)){
-      evt.stopPropagation();
-      messageContainer.remove();
-    }
-  });
-  document.body.addEventListener('keydown', (evt) => {
-    if (isEscapeKey(evt)) {
-      evt.stopPropagation();
-      messageContainer.remove();
-    }
-  });
+/**
+ * Закрывает сообщение при нажатии на Esc
+ * @param {Object} evt Объект события
+ */
+const onBodyKeydown = (evt) => {
+  if (isEscapeKey(evt)) {
+    evt.stopPropagation();
+    closeMessage();
+  }
 };
 
+/**
+ * Закрывает сообщение при клике в "пустоту"
+ * @param {Object} evt Объект события
+ */
+const onClickEmptySpace = (evt) => {
+  evt.stopPropagation();
+  closeMessage();
+};
+
+/**
+ * Закрытие сообщения
+ */
+function closeMessage() {
+  messageSuccessElement.remove();
+  messageErrorElement.remove();
+  document.body.removeEventListener('keydown', onBodyKeydown);
+  messageSuccessElement.removeEventListener('click', onClickEmptySpace);
+  messageErrorElement.removeEventListener('click', onClickEmptySpace);
+}
+
+/**
+ * Создает и показывает сообщение
+ * @param {Element} messageContainer Контэйнер сообщения
+ */
+const showMessage = (messageContainer) => {
+  document.body.append(messageContainer);
+  messageContainer.querySelector('button').addEventListener('click', () => messageContainer.remove());
+  messageContainer.addEventListener('click', onClickEmptySpace);
+  document.body.addEventListener('keydown', onBodyKeydown);
+};
+
+/**
+ * Отправляет данные из формы на сервер
+ * @param {Object} evt Объект события
+ */
 const onUploadFormSubmit = (evt) => {
   evt.preventDefault();
-
   const isValid = onValidate();
   if (isValid) {
     blockSubmitButton();
     sendData(new FormData(evt.target))
       .then(onCloseForm)
-      .then(() => showMessage('success'))
-      .catch(() => showMessage('error'))
+      .then(() => showMessage(messageSuccessElement))
+      .catch(() => showMessage(messageErrorElement))
       .finally(unblockSubmitButton);
   }
 };
 
+/**
+ * Показывает форму загрузки фотографии
+ */
 const openForm = () => {
   uploadOverlayElement.classList.remove('hidden');
   document.body.classList.add('modal-open');
@@ -82,20 +117,19 @@ const openForm = () => {
   createSlider();
 };
 
-const resetForm = () => {
-  uploadFormElement.reset();
-  setEffectStyle();
-  setPhotoScale();
-};
-
+/**
+ * Закрывает форму загрузки фотографии
+ */
 function onCloseForm() {
   uploadOverlayElement.classList.add('hidden');
   document.body.classList.remove('modal-open');
-  //document.removeEventListener('keydown', onDocumentKeydown);
+  document.removeEventListener('keydown', onDocumentKeydown);
   uploadFormElement.removeEventListener('submit', onUploadFormSubmit);
-  resetForm();
   sliderElement.noUiSlider.destroy();
   pristine.reset();
+  uploadFormElement.reset();
+  setEffectStyle();
+  setPhotoScale();
 }
 
 export {openForm};

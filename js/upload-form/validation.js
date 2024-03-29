@@ -62,6 +62,11 @@ const validateHashtagsCount = (value) => {
  */
 const validateDescription = (value) => value.trim().length <= DESCRIPTION_MAX_LENGTH;
 
+/**
+ * Убирает лишние пробелы по краям перед отправкой формы
+ * Проверяет валидность
+ * @returns Результат валидации
+ */
 const onValidate = () => {
   textDescriptionElement.value = textDescriptionElement.value.trim();
   textHashtagsElement.value = textHashtagsElement.value.trim();
