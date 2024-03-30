@@ -1,3 +1,5 @@
+import { shuffleArray } from './util.js';
+
 const template = document.querySelector('#picture').content;
 const templatePicture = template.querySelector('.picture');
 const pictureListFragment = document.createDocumentFragment();
@@ -22,10 +24,32 @@ const addPicture = (photo) => {
  * @param {Array} photos - Массив объектов Фото
  */
 const renderPictures = (photos) => {
+  // eslint-disable-next-line no-console
+  console.log('Call renderPictures');
+  pictureList.querySelectorAll('.picture').forEach((item) => {
+    pictureList.removeChild(item);
+  });
   photos.forEach((photo)=>{
     addPicture(photo);
   });
   return pictureList.append(pictureListFragment);
 };
 
-export {renderPictures };
+const setImgFilter = (filter, photos) => {
+  let filteredPhotos = [];
+  filter.classList.add('img-filters__button--active');
+  switch (filter.id) {
+    case 'filter-default':
+      filteredPhotos = photos.slice();
+      break;
+    case 'filter-random':
+      filteredPhotos = shuffleArray(photos.slice()).slice(0, 10);
+      break;
+    case 'filter-discussed':
+      filteredPhotos = photos.slice().sort((a, b) => b.comments.length - a.comments.length);
+      break;
+  }
+  renderPictures(filteredPhotos);
+};
+
+export {renderPictures, setImgFilter};
