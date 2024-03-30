@@ -1,27 +1,11 @@
-const ALERT_SHOW_TIME = 5000;
-
-/**
- * Возвращает рандомное целое положительное число из диапазона
- * @param {number} min - Начало диапазона
- * @param {number} max - Конец диапазона
- * @returns {number} Случайное число
- */
-const getRandomInteger = (min, max) => {
-  const lower = Math.ceil(Math.min(min, max));
-  const upper = Math.floor(Math.max(min, max));
-  const result = Math.random() * (upper - lower + 1) + lower;
-  return Math.floor(result);
-};
-
 const isEscapeKey = (evt) => evt.key === 'Escape';
 
-const showAlert = () => {
-  const alertContainer = document.querySelector('#data-error').content.querySelector('.data-error').cloneNode(true);
-  document.body.appendChild(alertContainer);
+const showAlert = (alertElement, showTime = 5000) => {
+  document.body.appendChild(alertElement);
 
   setTimeout(() => {
-    alertContainer.remove();
-  }, ALERT_SHOW_TIME);
+    alertElement.remove();
+  }, showTime);
 };
 
 // Функция взята из интернета и доработана
@@ -69,9 +53,14 @@ const throttle = (callback, delayBetweenFrames) => {
   };
 };
 
+/**
+ * Перемешивает элементы массива в случайном порядке
+ * @param {Array} array Массив с данными
+ * @returns Измененный массив
+ */
 const shuffleArray = (array) => array
   .map((a) => ({ sort: Math.random(), value: a }))
   .sort((a, b) => a.sort - b.sort)
   .map((a) => a.value);
 
-export {isEscapeKey, showAlert, getRandomInteger, debounce, throttle, shuffleArray};
+export {isEscapeKey, showAlert, debounce, throttle, shuffleArray};
