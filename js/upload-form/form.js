@@ -62,8 +62,10 @@ const onBodyKeydown = (evt) => {
  * @param {Object} evt Объект события
  */
 const onClickEmptySpace = (evt) => {
-  evt.stopPropagation();
-  closeMessage();
+  if (!evt.target.matches('div')){
+    evt.stopPropagation();
+    closeMessage();
+  }
 };
 
 /**
@@ -83,7 +85,7 @@ function closeMessage() {
  */
 const showMessage = (messageContainer) => {
   document.body.append(messageContainer);
-  messageContainer.querySelector('button').addEventListener('click', () => messageContainer.remove());
+  messageContainer.querySelector('button').addEventListener('click', () => closeMessage);
   messageContainer.addEventListener('click', onClickEmptySpace);
   document.body.addEventListener('keydown', onBodyKeydown);
 };

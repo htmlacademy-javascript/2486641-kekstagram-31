@@ -19,13 +19,15 @@ const pristine = new Pristine(uploadFormElement, {
   errorTextClass: 'img-upload__field-wrapper--error',
 });
 
+const hashtagsToArray = (hashtags) => hashtags.toLowerCase().replace(/\s+/g, ' ').trim().split(' ');
+
 /**
  * Проверяет формат хэштегов
  * @param {String} value Строка с хэштегами
  */
 const validateHashtagsFormat = (value) => {
   if (value.trim()) {
-    const hashtagsArray = value.trim().split(' ');
+    const hashtagsArray = hashtagsToArray(value);
     let checkSum = 0;
     hashtagsArray.forEach((element) => {
       if (hashtag.test(element)) {
@@ -42,7 +44,7 @@ const validateHashtagsFormat = (value) => {
  * @param {String} value Строка с хэштегами
  */
 const validateHashtagsUnique = (value) => {
-  const hashtagsArray = value.trim().split(' ');
+  const hashtagsArray = hashtagsToArray(value);
   const hashtagsUnique = new Set(hashtagsArray);
   return (hashtagsArray.length === hashtagsUnique.size);
 };
@@ -51,10 +53,7 @@ const validateHashtagsUnique = (value) => {
  * Проверяет количество хэштегов
  * @param {String} value Строка с хэштегами
  */
-const validateHashtagsCount = (value) => {
-  const hashtagsArray = value.trim().split(' ');
-  return (hashtagsArray.length <= HASHTAGS_MAX_COUNT);
-};
+const validateHashtagsCount = (value) => hashtagsToArray(value).length <= HASHTAGS_MAX_COUNT;
 
 /**
  * Проверяет длину описания
