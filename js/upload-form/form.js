@@ -19,6 +19,9 @@ const uploadOverlayElement = uploadFormElement.querySelector('.img-upload__overl
 const cancelButtonElement = uploadFormElement.querySelector('.img-upload__cancel');
 const messageSuccessElement = document.querySelector('#success').content.querySelector('.success').cloneNode(true);
 const messageErrorElement = document.querySelector('#error').content.querySelector('.error').cloneNode(true);
+const fileChooser = document.querySelector('.img-upload__start input[type=file]');
+const preview = document.querySelector('.img-upload__preview img');
+const previewElements = uploadFormElement.querySelectorAll('.effects__preview');
 
 /**
  * Закрывает форму при нажатии на Esc
@@ -131,5 +134,13 @@ function onCloseForm() {
   setEffectStyle();
   setPhotoScale();
 }
+
+fileChooser.addEventListener('change', () => {
+  const file = fileChooser.files[0];
+  preview.src = URL.createObjectURL(file);
+  previewElements.forEach((item) => {
+    item.style.backgroundImage = `url(${preview.src})`;
+  });
+});
 
 export {openForm};
