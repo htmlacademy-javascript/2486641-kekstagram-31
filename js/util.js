@@ -1,5 +1,7 @@
 const isEscapeKey = (evt) => evt.key === 'Escape';
 
+const wordsToArray = (words) => words.toLowerCase().replace(/\s+/g, ' ').trim().split(' ');
+
 const showAlert = (alertElement, showTime = 5000) => {
   document.body.appendChild(alertElement);
 
@@ -63,4 +65,4 @@ const shuffleArray = (array) => array
   .sort((a, b) => a.sort - b.sort)
   .map((a) => a.value);
 
-export {isEscapeKey, showAlert, debounce, throttle, shuffleArray};
+export {isEscapeKey, showAlert, debounce, throttle, shuffleArray, wordsToArray};
