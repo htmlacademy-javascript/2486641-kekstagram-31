@@ -108,8 +108,10 @@ const onChangeSlider = () => {
  * Создает слайдер с начальной конфигурацией
  */
 const createSlider = () => {
-  noUiSlider.create(sliderElement, SliderConfigs['none']);
-  sliderElement.noUiSlider.on('update', onChangeSlider);
+  if (!sliderElement.noUiSlider){
+    noUiSlider.create(sliderElement, SliderConfigs['none']);
+    sliderElement.noUiSlider.on('update', onChangeSlider);
+  }
 };
 
 /**

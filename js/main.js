@@ -28,9 +28,7 @@ const onPictureClick = (evt) => {
   }
 };
 
-const onUploadImage = () => {
-  openUploadForm();
-};
+const onUploadImage = () => openUploadForm();
 
 const start = () => {
   // Отрисовка миниатюр
