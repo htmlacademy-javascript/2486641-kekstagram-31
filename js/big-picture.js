@@ -2,31 +2,31 @@ import {isEscapeKey} from './util.js';
 
 const COUNT_NEW_COMMENTS = 5;
 
-const bigPicture = document.querySelector('.big-picture');
-const commentLoaderButton = bigPicture.querySelector('.social__comments-loader');
-const counterShownComments = bigPicture.querySelector('.social__comment-shown-count');
-const totalCommentsCount = bigPicture.querySelector('.social__comment-total-count');
-const closeModalButton = bigPicture.querySelector('.big-picture__cancel');
+const bigPictureElement = document.querySelector('.big-picture');
+const commentLoaderElement = bigPictureElement.querySelector('.social__comments-loader');
+const counterCommentsElement = bigPictureElement.querySelector('.social__comment-shown-count');
+const totalCommentsCountElement = bigPictureElement.querySelector('.social__comment-total-count');
+const closeFormElement = bigPictureElement.querySelector('.big-picture__cancel');
 
 /**
  * Формирует елемент список комментариев
  * @param {Array} comments Массив комментариев к фото
  */
 const createCommentList = (comments) => {
-  const commentList = bigPicture.querySelector('.social__comments');
-  const commentListItem = commentList.querySelector('.social__comment').cloneNode(true);
-  commentListItem.classList.add('hidden');
-  commentList.innerHTML = '';
+  const commentsElement = bigPictureElement.querySelector('.social__comments');
+  const commentItemElement = commentsElement.querySelector('.social__comment').cloneNode(true);
+  commentItemElement.classList.add('hidden');
+  commentsElement.innerHTML = '';
   comments.forEach((comment) => {
-    const avatar = commentListItem.querySelector('.social__picture');
+    const avatar = commentItemElement.querySelector('.social__picture');
     avatar.src = comment.avatar;
     avatar.alt = comment.name;
-    commentListItem.append(avatar);
+    commentItemElement.append(avatar);
 
-    const commentText = commentListItem.querySelector('.social__text');
+    const commentText = commentItemElement.querySelector('.social__text');
     commentText.textContent = comment.message;
-    commentListItem.append(commentText);
-    commentList.append(commentListItem.cloneNode(true));
+    commentItemElement.append(commentText);
+    commentsElement.append(commentItemElement.cloneNode(true));
   });
 };
 
@@ -34,12 +34,12 @@ const createCommentList = (comments) => {
  * Обновляет счетчик комментариев и скрывает кнопку загрузки если все комментарии показаны
  */
 const checkShownCounter = () => {
-  const countHiddenComments = bigPicture.querySelectorAll('.social__comment.hidden').length;
-  counterShownComments.textContent = totalCommentsCount.textContent - countHiddenComments;
+  const countHiddenComments = bigPictureElement.querySelectorAll('.social__comment.hidden').length;
+  counterCommentsElement.textContent = totalCommentsCountElement.textContent - countHiddenComments;
   if (countHiddenComments === 0){
-    commentLoaderButton.classList.add('hidden');
+    commentLoaderElement.classList.add('hidden');
   } else {
-    commentLoaderButton.classList.remove('hidden');
+    commentLoaderElement.classList.remove('hidden');
   }
 };
 
@@ -48,10 +48,10 @@ const checkShownCounter = () => {
  * @param {Number} countShowComments Количество комментариев которые нужно подгрузить
  */
 const showComments = (countShowComments) => {
-  const hiddenPictures = bigPicture.querySelectorAll('.social__comment.hidden');
-  const countHiddenComments = hiddenPictures.length;
+  const hiddenCommentElements = bigPictureElement.querySelectorAll('.social__comment.hidden');
+  const countHiddenComments = hiddenCommentElements.length;
   for (let i = 0; i < (countHiddenComments < countShowComments ? countHiddenComments : countShowComments); i++) {
-    hiddenPictures[i].classList.remove('hidden');
+    hiddenCommentElements[i].classList.remove('hidden');
   }
   checkShownCounter();
 };
@@ -61,11 +61,11 @@ const showComments = (countShowComments) => {
  * @param {Object} photo Объект Фото
  */
 const renderBigPicture = (photo) => {
-  bigPicture.querySelector('.big-picture__img').querySelector('img').src = photo.url;
-  bigPicture.querySelector('.likes-count').textContent = photo.likes;
-  totalCommentsCount.textContent = photo.comments.length;
-  bigPicture.querySelector('.social__caption').textContent = photo.description;
-  bigPicture.classList.remove('hidden');
+  bigPictureElement.querySelector('.big-picture__img').querySelector('img').src = photo.url;
+  bigPictureElement.querySelector('.likes-count').textContent = photo.likes;
+  totalCommentsCountElement.textContent = photo.comments.length;
+  bigPictureElement.querySelector('.social__caption').textContent = photo.description;
+  bigPictureElement.classList.remove('hidden');
   document.body.classList.add('modal-open');
 };
 
@@ -84,9 +84,9 @@ const onDocumentKeydown = (evt) => {
  * Закрывает модальное окно с фото
  */
 function onClosePictureModal() {
-  bigPicture.classList.add('hidden');
+  bigPictureElement.classList.add('hidden');
   document.body.classList.remove('modal-open');
-  commentLoaderButton.removeEventListener('click', onCommenstLoaderButton);
+  commentLoaderElement.removeEventListener('click', onCommenstLoaderButton);
   document.removeEventListener('keydown', onDocumentKeydown);
 }
 
@@ -97,8 +97,8 @@ function onClosePictureModal() {
 const openPictureModal = (photo) => {
   renderBigPicture(photo);
   createCommentList(photo.comments);
-  closeModalButton.addEventListener('click', onClosePictureModal);
-  commentLoaderButton.addEventListener('click', onCommenstLoaderButton);
+  closeFormElement.addEventListener('click', onClosePictureModal);
+  commentLoaderElement.addEventListener('click', onCommenstLoaderButton);
   document.addEventListener('keydown', onDocumentKeydown);
   checkShownCounter();
   showComments(COUNT_NEW_COMMENTS);

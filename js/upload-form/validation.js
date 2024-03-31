@@ -1,3 +1,5 @@
+import { wordsToArray } from '../util.js';
+
 const HASHTAGS_MAX_COUNT = 5;
 const DESCRIPTION_MAX_LENGTH = 140;
 
@@ -25,7 +27,7 @@ const pristine = new Pristine(uploadFormElement, {
  */
 const validateHashtagsFormat = (value) => {
   if (value.trim()) {
-    const hashtagsArray = value.trim().split(' ');
+    const hashtagsArray = wordsToArray(value);
     let checkSum = 0;
     hashtagsArray.forEach((element) => {
       if (hashtag.test(element)) {
@@ -42,7 +44,7 @@ const validateHashtagsFormat = (value) => {
  * @param {String} value Строка с хэштегами
  */
 const validateHashtagsUnique = (value) => {
-  const hashtagsArray = value.trim().split(' ');
+  const hashtagsArray = wordsToArray(value);
   const hashtagsUnique = new Set(hashtagsArray);
   return (hashtagsArray.length === hashtagsUnique.size);
 };
@@ -51,10 +53,7 @@ const validateHashtagsUnique = (value) => {
  * Проверяет количество хэштегов
  * @param {String} value Строка с хэштегами
  */
-const validateHashtagsCount = (value) => {
-  const hashtagsArray = value.trim().split(' ');
-  return (hashtagsArray.length <= HASHTAGS_MAX_COUNT);
-};
+const validateHashtagsCount = (value) => wordsToArray(value).length <= HASHTAGS_MAX_COUNT;
 
 /**
  * Проверяет длину описания

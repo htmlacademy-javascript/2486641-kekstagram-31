@@ -1,13 +1,13 @@
 import { renderPictures, setImgFilter } from './thumbnails.js';
 import { openPictureModal } from './big-picture.js';
-import { openForm } from './upload-form/form.js';
+import { openForm as openUploadForm} from './upload-form/form.js';
 import { getData } from './api.js';
 import { showAlert } from './util.js';
 
-const pictureList = document.querySelector('.pictures');
-const uploadInput = document.querySelector('.img-upload__input');
+const picturesElement = document.querySelector('.pictures');
+const uploadInputElement = document.querySelector('.img-upload__input');
 const filtersElement = document.querySelector('.img-filters');
-const alertContainer = document.querySelector('#data-error').content.querySelector('.data-error').cloneNode(true);
+const errorElement = document.querySelector('#data-error').content.querySelector('.data-error').cloneNode(true);
 
 let photos = [];
 
@@ -20,18 +20,6 @@ const onFilterClick = (evt) => {
   }
 };
 
-// Отрисовка миниатюр
-getData()
-  .then((elements) => {
-    photos = elements;
-    renderPictures(photos);
-    filtersElement.classList.remove('img-filters--inactive');
-    filtersElement.addEventListener('click', onFilterClick);
-  })
-  .catch(
-    () => showAlert(alertContainer)
-  );
-
 const onPictureClick = (evt) => {
   const selectedPicture = evt.target.closest('a');
   if (selectedPicture){
@@ -40,10 +28,22 @@ const onPictureClick = (evt) => {
   }
 };
 
-pictureList.addEventListener('click', onPictureClick);
+const onUploadImage = () => openUploadForm();
 
-const onUploadImage = () => {
-  openForm();
+const start = () => {
+  // Отрисовка миниатюр
+  getData()
+    .then((elements) => {
+      photos = elements;
+      renderPictures(photos);
+      filtersElement.classList.remove('img-filters--inactive');
+      filtersElement.addEventListener('click', onFilterClick);
+    })
+    .catch(
+      () => showAlert(errorElement)
+    );
+  picturesElement.addEventListener('click', onPictureClick);
+  uploadInputElement.addEventListener('change', onUploadImage);
 };
 
-uploadInput.addEventListener('change', onUploadImage);
+start();

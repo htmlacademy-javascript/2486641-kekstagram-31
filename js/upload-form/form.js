@@ -19,9 +19,9 @@ const uploadOverlayElement = uploadFormElement.querySelector('.img-upload__overl
 const cancelButtonElement = uploadFormElement.querySelector('.img-upload__cancel');
 const messageSuccessElement = document.querySelector('#success').content.querySelector('.success').cloneNode(true);
 const messageErrorElement = document.querySelector('#error').content.querySelector('.error').cloneNode(true);
-const fileChooser = document.querySelector('.img-upload__start input[type=file]');
-const preview = document.querySelector('.img-upload__preview img');
-const previewElements = uploadFormElement.querySelectorAll('.effects__preview');
+const fileChooserElement = document.querySelector('.img-upload__start input[type=file]');
+const previewElement = document.querySelector('.img-upload__preview img');
+const previewEffectElements = uploadFormElement.querySelectorAll('.effects__preview');
 
 /**
  * Закрывает форму при нажатии на Esc
@@ -62,8 +62,10 @@ const onBodyKeydown = (evt) => {
  * @param {Object} evt Объект события
  */
 const onClickEmptySpace = (evt) => {
-  evt.stopPropagation();
-  closeMessage();
+  if (!evt.target.matches('div')){
+    evt.stopPropagation();
+    closeMessage();
+  }
 };
 
 /**
@@ -83,7 +85,7 @@ function closeMessage() {
  */
 const showMessage = (messageContainer) => {
   document.body.append(messageContainer);
-  messageContainer.querySelector('button').addEventListener('click', () => messageContainer.remove());
+  messageContainer.querySelector('button').addEventListener('click', () => closeMessage);
   messageContainer.addEventListener('click', onClickEmptySpace);
   document.body.addEventListener('keydown', onBodyKeydown);
 };
@@ -135,11 +137,11 @@ function onCloseForm() {
   setPhotoScale();
 }
 
-fileChooser.addEventListener('change', () => {
-  const file = fileChooser.files[0];
-  preview.src = URL.createObjectURL(file);
-  previewElements.forEach((item) => {
-    item.style.backgroundImage = `url(${preview.src})`;
+fileChooserElement.addEventListener('change', () => {
+  const file = fileChooserElement.files[0];
+  previewElement.src = URL.createObjectURL(file);
+  previewEffectElements.forEach((item) => {
+    item.style.backgroundImage = `url(${previewElement.src})`;
   });
 });
 

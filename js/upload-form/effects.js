@@ -4,6 +4,15 @@ const SliderConfigs = {
     start: 100,
     step: 1,
     connect: 'lower',
+    format: {
+      to: (value) => {
+        if (Number.isInteger(value)) {
+          return value.toFixed(0);
+        }
+        return value.toFixed(1);
+      },
+      from: (value) => parseFloat(value),
+    },
   },
   chrome:
   {
@@ -99,8 +108,10 @@ const onChangeSlider = () => {
  * Создает слайдер с начальной конфигурацией
  */
 const createSlider = () => {
-  noUiSlider.create(sliderElement, SliderConfigs['none']);
-  sliderElement.noUiSlider.on('update', onChangeSlider);
+  if (!sliderElement.noUiSlider){
+    noUiSlider.create(sliderElement, SliderConfigs['none']);
+    sliderElement.noUiSlider.on('update', onChangeSlider);
+  }
 };
 
 /**
