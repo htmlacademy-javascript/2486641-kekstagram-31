@@ -37,11 +37,11 @@ const start = () => {
       photos = elements;
       renderPictures(photos);
       filtersElement.classList.remove('img-filters--inactive');
-      filtersElement.addEventListener('click', onFilterClick);
     })
     .catch(
       () => showAlert(errorElement)
     );
+  filtersElement.addEventListener('click', onFilterClick);
   picturesElement.addEventListener('click', onPictureClick);
   uploadInputElement.addEventListener('change', onUploadImage);
 };
