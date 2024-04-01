@@ -88,6 +88,7 @@ function onClosePictureModal() {
   document.body.classList.remove('modal-open');
   commentLoaderElement.removeEventListener('click', onCommenstLoaderButton);
   document.removeEventListener('keydown', onDocumentKeydown);
+  bigPictureElement.querySelector('.social__footer-text').value = '';
 }
 
 /**
