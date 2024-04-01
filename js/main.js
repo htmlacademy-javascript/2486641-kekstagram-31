@@ -1,6 +1,6 @@
 import { renderPictures, setImgFilter } from './thumbnails.js';
 import { openPictureModal } from './big-picture.js';
-import { openForm as openUploadForm} from './upload-form/form.js';
+import { openUploadForm} from './upload-form/form.js';
 import { getData } from './api.js';
 import { showAlert } from './util.js';
 
@@ -37,12 +37,12 @@ const start = () => {
       photos = elements;
       renderPictures(photos);
       filtersElement.classList.remove('img-filters--inactive');
+      filtersElement.addEventListener('click', onFilterClick);
+      picturesElement.addEventListener('click', onPictureClick);
     })
     .catch(
       () => showAlert(errorElement)
     );
-  filtersElement.addEventListener('click', onFilterClick);
-  picturesElement.addEventListener('click', onPictureClick);
   uploadInputElement.addEventListener('change', onUploadImage);
 };
 

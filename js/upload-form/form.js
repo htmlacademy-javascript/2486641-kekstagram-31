@@ -110,7 +110,7 @@ const onUploadFormSubmit = (evt) => {
 /**
  * Показывает форму загрузки фотографии
  */
-const openForm = () => {
+const openUploadForm = () => {
   uploadOverlayElement.classList.remove('hidden');
   document.body.classList.add('modal-open');
   document.addEventListener('keydown', onDocumentKeydown);
@@ -145,4 +145,4 @@ fileChooserElement.addEventListener('change', () => {
   });
 });
 
-export {openForm};
+export {openUploadForm};
