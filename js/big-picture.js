@@ -1,4 +1,4 @@
-import {isEscapeKey} from './util.js';
+import { onEscDown } from './util.js';
 
 const COUNT_NEW_COMMENTS = 5;
 
@@ -73,12 +73,7 @@ const onCommenstLoaderButton = () => {
   showComments(COUNT_NEW_COMMENTS);
 };
 
-const onDocumentKeydown = (evt) => {
-  if (isEscapeKey(evt)) {
-    evt.preventDefault();
-    onClosePictureModal();
-  }
-};
+const onDocumentKeydown = (evt) => onEscDown(evt, onClosePictureModal);
 
 /**
  * Закрывает модальное окно с фото

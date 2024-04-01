@@ -1,5 +1,5 @@
 import { createSlider, onChangeEffect, setEffectStyle } from './effects.js';
-import { isEscapeKey } from '../util.js';
+import { onEscDown } from '../util.js';
 import { onValidate, pristine } from './validation.js';
 import { onZoomIn, onZoomOut, setPhotoScale } from './scale.js';
 import { sendData } from '../api.js';
@@ -28,11 +28,8 @@ const previewEffectElements = uploadFormElement.querySelectorAll('.effects__prev
  * @param {Object} evt Объект события
  */
 const onDocumentKeydown = (evt) => {
-  if (isEscapeKey(evt)) {
-    evt.preventDefault();
-    if (!evt.target.matches('.text__hashtags') && !evt.target.matches('.text__description')) {
-      onCloseForm();
-    }
+  if (!evt.target.matches('.text__hashtags') && !evt.target.matches('.text__description')) {
+    onEscDown(evt, onCloseForm);
   }
 };
 
@@ -51,10 +48,8 @@ const unblockSubmitButton = () => {
  * @param {Object} evt Объект события
  */
 const onBodyKeydown = (evt) => {
-  if (isEscapeKey(evt)) {
-    evt.stopPropagation();
-    closeMessage();
-  }
+  evt.stopPropagation();
+  onEscDown(evt, closeMessage);
 };
 
 /**
@@ -62,7 +57,7 @@ const onBodyKeydown = (evt) => {
  * @param {Object} evt Объект события
  */
 const onClickEmptySpace = (evt) => {
-  if (!evt.target.matches('div')){
+  if (!evt.target.matches('div') && !evt.target.matches('h2')){
     evt.stopPropagation();
     closeMessage();
   }
@@ -110,7 +105,7 @@ const onUploadFormSubmit = (evt) => {
 /**
  * Показывает форму загрузки фотографии
  */
-const openForm = () => {
+const openUploadForm = () => {
   uploadOverlayElement.classList.remove('hidden');
   document.body.classList.add('modal-open');
   document.addEventListener('keydown', onDocumentKeydown);
@@ -145,4 +140,4 @@ fileChooserElement.addEventListener('change', () => {
   });
 });
 
-export {openForm};
+export {openUploadForm};

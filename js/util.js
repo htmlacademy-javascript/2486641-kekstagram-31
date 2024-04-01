@@ -65,4 +65,12 @@ const shuffleArray = (array) => array
   .sort((a, b) => a.sort - b.sort)
   .map((a) => a.value);
 
-export {isEscapeKey, showAlert, debounce, throttle, shuffleArray, wordsToArray};
+
+const onEscDown = (evt, cb) => {
+  if (isEscapeKey(evt)) {
+    evt.preventDefault();
+    cb();
+  }
+};
+
+export {showAlert, debounce, throttle, shuffleArray, wordsToArray, onEscDown};
